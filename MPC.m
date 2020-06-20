@@ -81,7 +81,7 @@ function [c,ceq] = nonLinearConstraint(parameters, states,statef, N, dt, vel)
     c = zeros(2*N+3,1);
     %ceq = zeros(2*N+3,1);
     for j = 1:N 
-        c(j) =  abs(polyval(parameters(1:3,1),(j)*dt)) - vel-5000;
+        c(j) =  abs(polyval(parameters(1:3,1),(j)*dt)) - 9000;
     end
     for j = N+1:2*N
         c(j) =  abs(polyval(parameters(4:6,1),(j-N)*dt)) - pi/6;
