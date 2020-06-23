@@ -7,7 +7,7 @@ a = [10;0;0];
 b = [0.35;0;0];
 L = 100;
 dt = 0.01;
-N = 50;
+N = 95;
 NN = 100;
 vel = dist/(N*dt);
 [parameters,states] = modelPredictiveControl(N,NN,dt,L,a,b,state0,statef,vel);
@@ -72,16 +72,16 @@ function del_statef_p = trajectoryGen(parameters, state0, statef, N, L, dt, k)
         states(3,j) = pi_to_pi(states(3,j));
     end
     setGlobalState(states);
-    del_statef_p = immse([states(1:2,N+k);states(3,N+k)*2] , [statef(1:2);statef(3)*2]);
+    del_statef_p = immse([states(1:2,N+k);states(3,N+k)*100/pi] , [statef(1:2);statef(3)*100/pi]);
 end
 
 function [c,ceq] = nonLinearConstraint(parameters, states,statef, N, NN, dt, vel, k)
     c = zeros(2*(NN),1);
     for j = k:N+k-1
-        c(j) =  abs(polyval(parameters(1:3,1),(j)*dt)) - vel;
+        c(j) =  abs(polyval(parameters(1:3,1),(j)*dt)) - 2*vel;
     end
     for j = (length(c)/2)+k:(length(c)/2)+N-1+k
-        c(j) =  abs(polyval(parameters(4:6,1),(j-N)*dt)) - pi/4;
+        c(j) =  abs(polyval(parameters(4:6,1),(j-N)*dt)) - pi/6;
     end
     c(N+k-1) = abs(polyval(parameters(1:3,1),(N+k-1)*dt));
     c(end/2 + N+k-1) = abs(polyval(parameters(4:6,1),(N+k-1)*dt));
