@@ -76,15 +76,17 @@ function del_statef_p = trajectoryGen(parameters, state0, statef, N, L, dt, k)
 end
 
 function [c,ceq] = nonLinearConstraint(parameters, states,statef, N, NN, dt, vel, k)
-    c = zeros(2*(NN),1);
+    extra = 0;
+    c = zeros(2*(NN)+extra,1);
     for j = k:N+k-1
         c(j) =  abs(polyval(parameters(1:3,1),(j)*dt)) - 2*vel;
     end
-    for j = (length(c)/2)+k:(length(c)/2)+N-1+k
-        c(j) =  abs(polyval(parameters(4:6,1),(j-N)*dt)) - pi/6;
+    for j = ((length(c)-extra)/2)+k:((length(c)-extra)/2)+N-1+k
+        c(j) =  abs(polyval(parameters(4:6,1),(j-NN)*dt)) - pi/6;
     end
     c(N+k-1) = abs(polyval(parameters(1:3,1),(N+k-1)*dt));
-    c(end/2 + N+k-1) = abs(polyval(parameters(4:6,1),(N+k-1)*dt));
+    c((end-extra)/2 + N+k-1) = abs(polyval(parameters(4:6,1),(N+k-1)*dt));
+    %c(end) = norm([states(1:2,N+k);states(3,N+k)*1000/pi] - [statef(1:2);statef(3)*1000/pi]);
     ceq=[];
 end
 
